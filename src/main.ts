@@ -1,17 +1,29 @@
+import { file } from '@babel/types';
 import * as dotenv from 'dotenv';
 import { readTranslationFile } from './file-service';
+import { translateText } from './translation-service';
 
 dotenv.config();
 
 export const main = async () => {
   try {
-    const languages = process.env.LANGUAGES;
     // split the string in a list of languages
+    const languages = (process.env.LANGUAGES).split(",");
+
+    // log the languages to be translated
     console.log(`Languages to translate file to: ${languages}`);
 
-    const file = await readTranslationFile();
+    // read in file containing data to be translated
+    const fileObj = await readTranslationFile();
 
-    console.log(`Text to translate: ${file}`);
+    console.log(`Text to translate: `, fileObj);
+    // iterate through list of languages and call translate API on each
+    for (var lang of languages) {
+      for (var value of Object.values(fileObj)) {
+        translateText(lang, value);
+      }
+    }
+
   } catch (err) {
     console.error(err);
   }

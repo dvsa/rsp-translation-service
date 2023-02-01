@@ -6,7 +6,7 @@
       "checkJs": true,
       "sourceMap": true,
       "esModuleInterop": true,
-      "strict": true
+      "strict": false
     },
     "include" : ["src/**/*.ts", "tests/**/*.ts"]
 }
