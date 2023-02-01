@@ -8,7 +8,6 @@
     "lint": "npx eslint --ext .js,.ts .",
     "lint:fix": "npx eslint --ext .js,.ts . --fix",
     "translate": "ts-node src/main.ts"
-
   },
   "keywords": [
     "dvsa",
@@ -28,6 +27,8 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "dotenv": "^16.0.3"
+    "axios": "^1.3.0",
+    "dotenv": "^16.0.3",
+    "request": "^2.88.2"
   }
 }
