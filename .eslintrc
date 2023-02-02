@@ -1,4 +1,0 @@
-{
-	"extends": "@dvsa/eslint-config-ts",
-    "ignorePatterns": ["babel.config.js"]
-}

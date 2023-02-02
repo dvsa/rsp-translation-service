@@ -1,63 +1,71 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable security/detect-object-injection */
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* This simple app uses the '/translate' resource to translate text from
 one language to another. */
 
-import { resolve } from "path";
-import { send } from "process";
+import { resolve } from 'path';
+import { send } from 'process';
 
 /* This template relies on the request module, a simplified and user friendly
 way to make HTTP requests. */
-const request = require('request');
-const axios = require('axios').default;
-const uuidv4 = require('uuid/v4');
-const dotenv = require('dotenv');
+import uuid4 from 'uuid4';
+import dotenv from 'dotenv';
+import axios from 'axios';
 
 dotenv.config();
 
-var key_var = 'TRANSLATOR_TEXT_RESOURCE_KEY';
-if (!process.env[key_var]) {
-    throw new Error('Please set/export the following environment variable: ' + key_var);
+let keyVar = 'TRANSLATOR_TEXT_RESOURCE_KEY';
+if (!process.env[keyVar]) {
+  throw new Error(`Please set/export the following environment variable: ${keyVar}`);
 }
-var resourceKey = process.env[key_var];
+let resourceKey = process.env[keyVar];
 
-var endpoint_var = 'TRANSLATOR_TEXT_ENDPOINT';
-if (!process.env[endpoint_var]) {
-    throw new Error('Please set/export the following environment variable: ' + endpoint_var);
+let endpointVar = 'TRANSLATOR_TEXT_ENDPOINT';
+if (!process.env[endpointVar]) {
+  throw new Error(`Please set/export the following environment variable: ${endpointVar}`);
 }
-var endpoint = process.env[endpoint_var];
+let endpoint = process.env[endpointVar];
 
-var region_var = 'TRANSLATOR_TEXT_REGION';
-if (!process.env[region_var]) {
-    throw new Error('Please set/export the following environment variable: ' + region_var);
+let regionVar = 'TRANSLATOR_TEXT_REGION';
+if (!process.env[regionVar]) {
+  throw new Error(`Please set/export the following environment variable: ${regionVar}`);
 }
-var region = process.env[region_var];
+let region = process.env[regionVar];
 
 /* If you encounter any issues with the base_url or path, make sure that you are
 using the latest endpoint: https://docs.microsoft.com/azure/cognitive-services/translator/reference/v3-0-translate */
-export function translateText(lang, value){
-    let options = {
-        method: 'POST',
-        baseUrl: endpoint,
-        url: 'translate',
-        qs: {
-          'api-version': '3.0',
-          'to': [lang]
-        },
-        headers: {
-          'Ocp-Apim-Subscription-Key': resourceKey,
-          'Ocp-Apim-Subscription-Region': region,
-          'Content-type': 'application/json',
-          'X-ClientTraceId': uuidv4().toString()
-        },
-        body: [{
-              'text': value
-        }],
-        json: true,
-    };
-    // console.log('lang: ', lang, 'value: ', value);
-    request(options, function(err, res, body){
-        console.log(JSON.stringify(body, null, 4));
-    });
+export async function translateText(lang, value): Promise<Array<Record<string, unknown>>> {
+  let axiosOptions = {
+    url: 'translate',
+    method: 'post',
+    baseURL: endpoint,
+    params: {
+      'api-version': '3.0',
+      to: lang,
+    },
+    headers: {
+      'Ocp-Apim-Subscription-Key': resourceKey,
+      'Ocp-Apim-Subscription-Region': region,
+      'Content-type': 'application/json',
+      'X-ClientTraceId': uuid4().toString(),
+    },
+    data: [{
+      text: value,
+    }],
+  };
 
-}  
-
-// Call the function to translate text.
+  try {
+    const response = await axios(axiosOptions);
+    return response.data;
+  } catch (err) {
+    // console.log(err);
+    console.log(err.response.data);
+    console.log(err.message);
+    throw (err);
+  }
+}
