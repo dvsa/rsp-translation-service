@@ -7,7 +7,8 @@
     "test": "./node_modules/jest/bin/jest.js",
     "lint": "npx eslint --ext .js,.ts .",
     "lint:fix": "npx eslint --ext .js,.ts . --fix",
-    "translate": "ts-node src/main.ts"
+    "translate": "ts-node src/main.ts",
+    "translate-file": "ts-node src/translateFile.ts"
   },
   "keywords": [
     "dvsa",
