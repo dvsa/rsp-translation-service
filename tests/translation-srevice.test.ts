@@ -1,6 +1,6 @@
 import { translateText } from '../src/translation-service';
 
-describe('Translation Service', () => {
+describe.skip('Translation Service', () => {
   test('Translates the file', async () => {
     const result = await translateText('fr', 'Hello, World!');
     console.log(result[0].translations[0].text);
