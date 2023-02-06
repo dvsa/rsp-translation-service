@@ -18,8 +18,8 @@ describe.only('translateFile', () => {
     expect(result.header.title).toBe('Salut tout le monde!');
   });
 
-  test.skip('Translate a nested nested object', async () => {
+  test('Translate a nested nested object', async () => {
     const result = await translateFile('fr', { header: { title: 'Hello, World!', subtitle: { paragraph: 'I am a nested object' } } });
-    expect(result.paragraph).toBe('Je suis un objet imbriqué');
+    expect(result.header.subtitle.paragraph).toBe('Je suis un objet imbriqué');
   });
 });
