@@ -29,7 +29,7 @@ export const translateFile = async (lang: string, file: object) => {
         toTranslate[key] = iterate(toTranslate[key]);
       } else {
         // console.log(lang, x[key]);
-        console.log(toTranslate[key], 'translating...');
+        console.log(toTranslate[key]);
         toTranslate[key] = promises.push(translateText(lang, toTranslate[key]));
       }
     });
