@@ -1,4 +1,5 @@
 import * as dotenv from 'dotenv';
+import * as fs from 'node:fs';
 import { readTranslationFile } from './file-service';
 import { translateFile } from './translateFile';
 
@@ -11,17 +12,20 @@ export const main = async () => {
 
     // log the languages to be translated
     // console.log(`Languages to translate file to: ${languages}`);
-
-    // read in file containing data to be translated
-    const fileObj = await readTranslationFile();
-    // console.log(fileObj);
-
-    const promises = [];
-    languages.forEach((lang) => {
-      promises.push(translateFile(lang, fileObj));
+    // const fileObjA = await readTranslationFile();
+    languages.map(async (lang) => {
+      const fileObjA = await readTranslationFile();
+      await translateFile(lang, fileObjA)
+        .then((value) => {
+          console.log(value);
+          fs.writeFile(`./translations/${lang}.json`, JSON.stringify(value), (err) => {
+            if (err) {
+              console.error(err);
+            }
+          });
+        });
+      return '';
     });
-    const returnPromises = await Promise.all(promises);
-    console.log(returnPromises);
   } catch (err) {
     console.log(err);
   }

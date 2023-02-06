@@ -3,32 +3,30 @@ one language to another. */
 
 import uuid4 from 'uuid4';
 import dotenv from 'dotenv';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
+import { TranslatedLanguage } from './types/translation-api-response';
 
 dotenv.config();
 
-const keyVar = 'TRANSLATOR_TEXT_RESOURCE_KEY';
-if (!process.env[keyVar]) {
-  throw new Error(`Please set/export the following environment variable: ${keyVar}`);
+const resourceKey = process.env.TRANSLATOR_TEXT_RESOURCE_KEY;
+if (!resourceKey) {
+  throw new Error('Please set/export the following environment variable: TRANSLATOR_TEXT_RESOURCE_KEY');
 }
-const resourceKey = process.env[keyVar];
 
-const endpointVar = 'TRANSLATOR_TEXT_ENDPOINT';
-if (!process.env[endpointVar]) {
-  throw new Error(`Please set/export the following environment variable: ${endpointVar}`);
+const endpoint = process.env.TRANSLATOR_TEXT_ENDPOINT;
+if (!endpoint) {
+  throw new Error('Please set/export the following environment variable: TRANSLATOR_TEXT_ENDPOINT');
 }
-const endpoint = process.env[endpointVar];
 
-const regionVar = 'TRANSLATOR_TEXT_REGION';
-if (!process.env[regionVar]) {
-  throw new Error(`Please set/export the following environment variable: ${regionVar}`);
+const region = process.env.TRANSLATOR_TEXT_REGION;
+if (!region) {
+  throw new Error('Please set/export the following environment variable: TRANSLATOR_TEXT_REGION');
 }
-const region = process.env[regionVar];
 
 /* If you encounter any issues with the base_url or path, make sure that you are
 using the latest endpoint: https://docs.microsoft.com/azure/cognitive-services/translator/reference/v3-0-translate */
 // export async function translateText(lang, value): Promise<Array<Record<string, unknown>>> {
-export async function translateText(lang, value) {
+export async function translateText(lang, value): Promise<string> {
   const axiosOptions = {
     url: 'translate',
     method: 'post',
@@ -49,14 +47,14 @@ export async function translateText(lang, value) {
   };
 
   try {
-    const response = await axios(axiosOptions);
+    const response: AxiosResponse<Array<TranslatedLanguage>> = await axios(axiosOptions);
     /* const respObj = {
       translation: response.data[0].translations[0].text,
       language: response.data[0].translations[0].to,
     }; */
     return response.data[0].translations[0].text;
   } catch (err) {
-    console.log(err.message);
+    console.log((err as Error).message);
     throw (err);
   }
 }
