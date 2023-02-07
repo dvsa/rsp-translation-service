@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 import * as fs from 'node:fs';
-import { readTranslationFile } from './file-service';
+import { readTranslationFile, appendMissingFields } from './file-service';
 import { translateFile } from './translateFile';
 
 dotenv.config();
@@ -10,22 +10,35 @@ export const main = async () => {
     // split the string in a list of languages
     const languages: Array<string> = (process.env.LANGUAGES).split(',');
 
-    // log the languages to be translated
-    // console.log(`Languages to translate file to: ${languages}`);
+    const perChunk = 1;
+    const result = languages.reduce((resultArray, item, index) => {
+      const chunkIndex = Math.floor(index / perChunk);
+      if (!resultArray[chunkIndex]) {
+        resultArray[chunkIndex] = [];
+      }
+      resultArray[chunkIndex].push(item);
+      return resultArray;
+    }, []);
+
+    console.log(result);
+
     // const fileObjA = await readTranslationFile();
-    languages.map(async (lang) => {
-      const fileObjA = await readTranslationFile();
-      await translateFile(lang, fileObjA)
-        .then((value) => {
-          console.log(value);
-          fs.writeFile(`./translations/${lang}.json`, JSON.stringify(value), (err) => {
-            if (err) {
-              console.error(err);
-            }
+    for (const batch of result) {
+      await Promise.all(batch.map(async (lang) => {
+        const fileObjA = await readTranslationFile();
+        await translateFile(lang, fileObjA)
+          .then((value) => {
+            fs.writeFile(`./translations/${lang}.json`, JSON.stringify(value, null, 4), (err) => {
+              if (err) {
+                console.error(err);
+              }
+            });
           });
-        });
-      return '';
-    });
+      }));
+    }
+
+    // const fileObjA = await readTranslationFile();
+    // console.log(appendMissingFields(fileObjA));
   } catch (err) {
     console.log(err);
   }
