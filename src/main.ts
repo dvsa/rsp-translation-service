@@ -1,44 +1,28 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
 import * as dotenv from 'dotenv';
-import * as fs from 'node:fs';
-import { readTranslationFile, appendMissingFields } from './file-service';
+import { readTranslationFile, writeTranslationFile } from './fileService';
 import { translateFile } from './translateFile';
 
 dotenv.config();
 
 export const main = async () => {
   try {
-    // split the string in a list of languages
-    const languages: Array<string> = (process.env.LANGUAGES).split(',');
+    // split the string in to an array of languages
+    const languages: Array<string> = ((process.env.LANGUAGES).split(',').filter((element) => element.length === 2));
 
-    const perChunk = 1;
-    const result = languages.reduce((resultArray, item, index) => {
-      const chunkIndex = Math.floor(index / perChunk);
-      if (!resultArray[chunkIndex]) {
-        resultArray[chunkIndex] = [];
-      }
-      resultArray[chunkIndex].push(item);
-      return resultArray;
-    }, []);
+    // split the allow list in to an array of words
+    const allowList: Array<string> = ((process.env.ALLOW_LIST).split(',')).filter((element) => !(element === ''));
 
-    console.log(result);
-
-    // const fileObjA = await readTranslationFile();
-    for (const batch of result) {
-      await Promise.all(batch.map(async (lang) => {
-        const fileObjA = await readTranslationFile();
-        await translateFile(lang, fileObjA)
-          .then((value) => {
-            fs.writeFile(`./translations/${lang}.json`, JSON.stringify(value, null, 4), (err) => {
-              if (err) {
-                console.error(err);
-              }
-            });
-          });
-      }));
-    }
-
-    // const fileObjA = await readTranslationFile();
-    // console.log(appendMissingFields(fileObjA));
+    await readTranslationFile()
+      .then(async (fileObj) => {
+        for (const lang of languages) {
+          await translateFile(lang, fileObj, allowList)
+            .then((value) => writeTranslationFile(lang, value))
+            .catch(() => console.log(`There was an error translating the language ${lang}. Please ensure it is a valid language code.`));
+        }
+      })
+      .catch(() => console.log('There was an error reading the lang.json file.'));
   } catch (err) {
     console.log(err);
   }

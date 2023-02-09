@@ -7,6 +7,7 @@ jest.mock('../src/translation-service', () => ({
 }));
 
 const language = 'fr';
+const allowList = ['title', 'paragraph', 'link'];
 
 const title = 'Hello, World!';
 
@@ -19,15 +20,15 @@ describe('translateFile', () => {
     mockTranslateText.mockRestore();
   });
 
-  test('Translates a given object', async () => {
+  test('Translates an object', async () => {
     mockTranslateText.mockResolvedValue(translationTitle);
-    const result = await translateFile(language, { title });
+    const result = await translateFile(language, { title }, allowList);
     expect(result.title).toBe(translationTitle);
   });
 
   test('Translates a nested object', async () => {
     mockTranslateText.mockResolvedValue(translationTitle);
-    const result = await translateFile(language, { header: { title } });
+    const result = await translateFile(language, { header: { title } }, allowList);
     expect(result.header.title).toBe(translationTitle);
   });
 
@@ -45,6 +46,7 @@ describe('translateFile', () => {
         },
         link: 'click here',
       },
+      allowList,
     );
     expect(result).toEqual({
       header: {
@@ -53,5 +55,65 @@ describe('translateFile', () => {
       },
       link: translationLink,
     });
+  });
+
+  test('Ignores item if it is not in allowList', async () => {
+    mockTranslateText.mockResolvedValueOnce(translationTitle);
+    mockTranslateText.mockResolvedValueOnce(translationLink);
+    const result = await translateFile(
+      language,
+      {
+        header:
+        {
+          title: 'Hello, World!',
+          subtitle: { paragraph: 'I am a nested object' },
+        },
+        link: 'click here',
+      },
+      ['title', 'link'],
+    );
+    expect(result).toEqual({
+      header:
+        {
+          title: translationTitle,
+          subtitle: { paragraph: 'I am a nested object' },
+        },
+      link: translationLink,
+    });
+  });
+
+  test('If allow list is empty, all items are translated', async () => {
+    mockTranslateText.mockResolvedValueOnce(translationTitle);
+    mockTranslateText.mockResolvedValueOnce(translationNested);
+    mockTranslateText.mockResolvedValueOnce(translationLink);
+
+    const result = await translateFile(
+      language,
+      {
+        header:
+        {
+          title: 'Hello, World!',
+          subtitle: { paragraph: 'I am a nested object' },
+        },
+        link: 'click here',
+      },
+      [],
+    );
+    expect(result).toEqual({
+      header:
+        {
+          title: translationTitle,
+          subtitle: { paragraph: translationNested },
+        },
+      link: translationLink,
+    });
+  });
+
+  test('If passed language is invalid, it handles the error', async () => {
+
+  });
+
+  test('If lang.json is empty, it handles the error', async () => {
+
   });
 });
