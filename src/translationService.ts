@@ -3,7 +3,7 @@ one language to another. */
 
 import uuid4 from 'uuid4';
 import dotenv from 'dotenv';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { TranslatedLanguage } from './types/translation-api-response';
 
 dotenv.config();
@@ -26,14 +26,14 @@ if (!region) {
 /* If you encounter any issues with the base_url or path, make sure that you are
 using the latest endpoint: https://docs.microsoft.com/azure/cognitive-services/translator/reference/v3-0-translate */
 // export async function translateText(lang, value): Promise<Array<Record<string, unknown>>> {
-export async function translateText(lang, value): Promise<string> {
+export async function translateText(lang, value): Promise<unknown> {
   const axiosOptions = {
     url: 'translate',
     method: 'post',
     baseURL: endpoint,
     params: {
       'api-version': '3.0',
-      to: lang,
+      to: lang as string,
     },
     headers: {
       'Ocp-Apim-Subscription-Key': resourceKey,
@@ -42,7 +42,7 @@ export async function translateText(lang, value): Promise<string> {
       'X-ClientTraceId': uuid4().toString(),
     },
     data: [{
-      text: value,
+      text: value as string,
     }],
   };
 
@@ -54,7 +54,8 @@ export async function translateText(lang, value): Promise<string> {
     }; */
     return response.data[0].translations[0].text;
   } catch (err) {
-    console.log((err as Error).message);
-    throw (err);
+    console.log('There was an error when calling to the translation API. The following was received:');
+    console.log((err as AxiosError).response.status, ((err as AxiosError).code));
+    return Promise.reject(new Error());
   }
 }
