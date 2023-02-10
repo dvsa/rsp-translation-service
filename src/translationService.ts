@@ -54,8 +54,8 @@ export async function translateText(lang: string, value: string): Promise<string
     }; */
     return response.data[0].translations[0].text;
   } catch (err) {
-    console.log('There was an error when calling to the translation API. The following was received:');
-    console.log((err as AxiosError).response.status, ((err as AxiosError).code));
-    return Promise.reject(new Error());
+    const msg = `There was an error when calling to the translation API. The following was received: ${(err as AxiosError).response?.status}, ${((err as AxiosError).code)}`;
+    console.log(msg);
+    return Promise.reject(new Error(msg));
   }
 }

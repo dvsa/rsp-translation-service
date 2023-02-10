@@ -1,8 +1,5 @@
 import { readTranslationFile, writeTranslationFile } from '../src/fileService';
 
-jest.spyOn(console, 'log');
-jest.spyOn(console, 'error');
-
 const mockReadFile = jest.fn();
 const mockWriteFileSync = jest.fn();
 

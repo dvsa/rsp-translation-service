@@ -4,7 +4,7 @@
   "description": "Script to read in a JSON file and translate the values ",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/jest/bin/jest.js",
+    "test": "./node_modules/jest/bin/jest.js --silent",
     "lint": "npx eslint --ext .js,.ts .",
     "lint:fix": "npx eslint --ext .js,.ts . --fix",
     "translate": "ts-node src/main.ts",
