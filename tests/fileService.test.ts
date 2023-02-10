@@ -1,5 +1,8 @@
 import { readTranslationFile, writeTranslationFile } from '../src/fileService';
 
+jest.spyOn(console, 'log');
+jest.spyOn(console, 'error');
+
 const mockReadFile = jest.fn();
 const mockWriteFileSync = jest.fn();
 
@@ -27,10 +30,12 @@ const resolvedJSON = {
 };
 
 describe('fileService', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
   test('Correctly parses JSON from a file', async () => {
     mockReadFile.mockResolvedValueOnce(JSON.stringify(resolvedJSON));
     const readIn = await readTranslationFile();
-    console.log(readIn);
     expect(readIn).toEqual(resolvedJSON);
   });
 

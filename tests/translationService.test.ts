@@ -1,6 +1,14 @@
 import { translateText } from '../src/translationService';
 
+jest.spyOn(console, 'log');
+jest.spyOn(console, 'error');
+
+const axiosMock = jest.mock('axios');
+
 describe('Translation Service', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
   test('Translates a string into a specified language', async () => {
     const result = await translateText('fr', 'Hello, World!');
     expect(result).toBe('Salut tout le monde!');

@@ -10,7 +10,7 @@ export const translateFile = async <Type> (lang: string, file: Type, allowList: 
       if (typeof toTranslate[key] === 'object') {
         translatedFile[key] = await iterate(toTranslate[key] as Type);
       } else if (allowList.length === 0 || allowList.includes(key)) {
-        translatedFile[key] = await translateText(lang, toTranslate[key])
+        translatedFile[key] = await translateText(lang, toTranslate[key] as string)
           .catch(() => Promise.reject(new Error()));
       } else {
         translatedFile[key] = toTranslate[key] as string;
