@@ -12,7 +12,7 @@ export const readTranslationFile = async (): Promise<object> => {
   }
 };
 
-export const writeTranslationFile = (lang: string, value) => {
+export const writeTranslationFile = (lang: string, value: object) => {
   try {
     if (!fs.existsSync('./translations')) {
       fs.mkdirSync('./translations');

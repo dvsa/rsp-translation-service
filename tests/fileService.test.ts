@@ -6,7 +6,7 @@ const mockWriteFileSync = jest.fn();
 jest.mock('node:fs', () => ({
   existsSync: jest.fn(),
   mkdirSync: jest.fn(),
-  writeFileSync: (arg1, arg2) => mockWriteFileSync(arg1, arg2) as void,
+  writeFileSync: (arg1: string, arg2: string) => mockWriteFileSync(arg1, arg2) as void,
   promises: {
     readFile: () => mockReadFile() as Promise<object>,
   },
