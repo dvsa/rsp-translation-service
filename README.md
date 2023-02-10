@@ -8,7 +8,7 @@ Clone or download the project
 
 Create and set your credentials in a `.env` file.
 
-In the `.env` file, add all the languages you want to translate as a comma separated list. Languages must be two-letter codes - anything that does not follow this format will be removed from the list of languages prior to translation. For example:
+In the `.env` file, add all the languages you want to translate as a comma separated list. Languages must be two-letter codes - anything that does not follow this format will be removed from the list of languages prior to translation. The Microsoft list of supported languages [can be found here](https://learn.microsoft.com/en-GB/azure/cognitive-services/translator/language-support). For example:
 
 ```
 LANGUAGES=en,bg,fr,es,cy

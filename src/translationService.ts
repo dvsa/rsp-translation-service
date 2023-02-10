@@ -26,14 +26,14 @@ if (!region) {
 /* If you encounter any issues with the base_url or path, make sure that you are
 using the latest endpoint: https://docs.microsoft.com/azure/cognitive-services/translator/reference/v3-0-translate */
 // export async function translateText(lang, value): Promise<Array<Record<string, unknown>>> {
-export async function translateText(lang, value): Promise<unknown> {
+export async function translateText(lang: string, value: string): Promise<string> {
   const axiosOptions = {
     url: 'translate',
     method: 'post',
     baseURL: endpoint,
     params: {
       'api-version': '3.0',
-      to: lang as string,
+      to: lang,
     },
     headers: {
       'Ocp-Apim-Subscription-Key': resourceKey,
@@ -42,7 +42,7 @@ export async function translateText(lang, value): Promise<unknown> {
       'X-ClientTraceId': uuid4().toString(),
     },
     data: [{
-      text: value as string,
+      text: value,
     }],
   };
 
