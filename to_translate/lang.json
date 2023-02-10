@@ -1,0 +1,18 @@
+{
+    "site_title": "DVSA roadside fines portal",
+    "feedback_banner": "This is a new service - your feedback will help us to improve it.",
+    "footer": {
+      "cookies": "Cookies",
+      "terms_conditions": "Terms and conditions",
+      "accessibility_statement": "Accessibility statement",
+      "privacy_statement": "Privacy statement",
+      "copyright": "Crown Copyright"
+    },
+    "validation": {
+      "code": "Code required"
+    },
+    "home": {
+      "title": "Pay a DVSA roadside fine",
+      "help_text" : "Enter the 16 digit code"
+    }
+}
