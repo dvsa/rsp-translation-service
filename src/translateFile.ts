@@ -3,7 +3,7 @@
 /* eslint-disable no-restricted-syntax */
 import { translateText } from './translationService';
 
-export const translateFile = async <Type> (lang: string, file: Type, allowList: Array<string>) : Promise<Type> => {
+export const translateFile = async <Type extends object> (lang: string, file: Type, allowList: Array<string>) : Promise<Type> => {
   async function iterate(toTranslate: Type) {
     const translatedFile = {};
     for (const key of Object.keys(toTranslate)) {
