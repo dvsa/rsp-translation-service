@@ -1,0 +1,11 @@
+name: CI
+
+on:
+  push:
+
+jobs:
+  lint:
+    uses: dvsa/.github/.github/workflows/nodejs-lint.yaml@v2.3
+
+  test:
+    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v2.3
