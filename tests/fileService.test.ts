@@ -1,32 +1,43 @@
-import * as fs from 'node:fs';
 import { readTranslationFile, writeTranslationFile } from '../src/fileService';
 
-describe('file-service', () => {
+const mockReadFile = jest.fn();
+const mockWriteFileSync = jest.fn();
+
+jest.mock('node:fs', () => ({
+  existsSync: jest.fn(),
+  mkdirSync: jest.fn(),
+  writeFileSync: (arg1, arg2) => mockWriteFileSync(arg1, arg2) as void,
+  promises: {
+    readFile: () => mockReadFile() as Promise<object>,
+  },
+}));
+
+jest.mock('node:fs/promises', () => ({
+  readFile: () => mockReadFile() as Promise<string>,
+}));
+
+const resolvedJSON = {
+  site_title: 'DVSA roadside fines portal',
+  footer: {
+    cookies: 'Cookies',
+  },
+  validation: {
+    code: 'Code required',
+  },
+};
+
+describe('fileService', () => {
   test('Correctly parses JSON from a file', async () => {
+    mockReadFile.mockResolvedValueOnce(JSON.stringify(resolvedJSON));
     const readIn = await readTranslationFile();
-    expect(readIn).toEqual({
-      site_title: 'DVSA roadside fines portal',
-      feedback_banner: 'This is a new service - your feedback will help us to improve it.',
-      footer: {
-        cookies: 'Cookies',
-        terms_conditions: 'Terms and conditions',
-        accessibility_statement: 'Accessibility statement',
-        privacy_statement: 'Privacy statement',
-        copyright: 'Crown Copyright',
-      },
-      validation: {
-        code: 'Code required',
-      },
-      home: {
-        title: 'Pay a DVSA roadside fine',
-        help_text: 'Enter the 16 digit code',
-      },
-    });
+    console.log(readIn);
+    expect(readIn).toEqual(resolvedJSON);
   });
 
-  test('Correctly sanitizes file name', () => {
+  test('Correctly sanitizes file name and writes to JSON file', () => {
     const testLang = ';tt3-[4]{';
-    writeTranslationFile(testLang, { test: 'this is a test' });
-    expect(fs.existsSync('./translations/tt.json')).toBe(true);
+    mockWriteFileSync.mockResolvedValue({});
+    writeTranslationFile(testLang, { title: 'I am a title' });
+    expect(mockWriteFileSync).toHaveBeenCalledWith('./translations/tt.json', JSON.stringify({ title: 'I am a title' }, null, 4));
   });
 });

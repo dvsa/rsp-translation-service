@@ -2,7 +2,7 @@ import { translateFile } from '../src/translateFile';
 
 const mockTranslateText = jest.fn();
 
-jest.mock('../src/translation-service', () => ({
+jest.mock('../src/translationService', () => ({
   translateText: () => mockTranslateText() as Promise<string>,
 }));
 
@@ -109,11 +109,22 @@ describe('translateFile', () => {
     });
   });
 
-  test('If passed language is invalid, it handles the error', async () => {
-
-  });
-
-  test('If lang.json is empty, it handles the error', async () => {
-
+  test('If passed language is invalid, it passes the error', async () => {
+    mockTranslateText.mockRejectedValueOnce('error');
+    const result = async () => {
+      try {
+        await translateFile(
+          'xr',
+          {
+            title: 'I am a translation',
+          },
+          ['title'],
+        );
+        return await Promise.resolve();
+      } catch (err) {
+        return err as Error;
+      }
+    };
+    expect(await result()).toEqual(Error());
   });
 });
