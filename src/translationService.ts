@@ -1,7 +1,7 @@
 /* This simple app uses the '/translate' resource to translate text from
 one language to another. */
 
-import uuid4 from 'uuid4';
+import { v4 as uuid4 } from 'uuid';
 import dotenv from 'dotenv';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { TranslatedLanguage } from './types/translation-api-response';
