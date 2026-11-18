@@ -5,7 +5,7 @@ on:
 
 jobs:
   lint:
-    uses: dvsa/.github/.github/workflows/nodejs-lint.yaml@v2.3
+    uses: dvsa/.github/.github/workflows/nodejs-lint.yaml@v7
 
   test:
-    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v2.3
+    uses: dvsa/.github/.github/workflows/nodejs-test.yaml@v7
